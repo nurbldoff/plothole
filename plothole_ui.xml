@@ -1,0 +1,34 @@
+  <ui>
+    <menubar name="MenuBar">
+      <menu action="File">
+        <menuitem action="Open"/>
+        <menuitem action="Save"/>
+        <menuitem action="Save As"/>
+        <menuitem action="Quit"/>
+      </menu>
+      <menu action="Edit">
+        <menuitem action="Copy"/>
+        <menuitem action="Cut"/>
+        <menuitem action="Paste"/>
+      </menu>
+      <menu action="Source">
+        <menuitem action="Add Source"/>
+        <menuitem action="Add Source from File"/>
+        <menuitem action="Add Source from Clipboard"/>
+        <menuitem action="Duplicate Source"/>
+        <menuitem action="Remove Source"/>
+        <menuitem action="Add Folder"/>
+        <menuitem action="Export to file"/>
+      </menu>
+      <menu action="Plot">
+        <menuitem action="New Plot"/>
+        <menuitem action="Delete Plot"/>
+        <menuitem action="Select Sources"/>
+      </menu>
+    </menubar>
+
+    <toolbar name="Toolbar">
+      <toolitem action="Quit"/>
+      <separator/>
+    </toolbar>
+  </ui>

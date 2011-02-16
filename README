@@ -1,0 +1,100 @@
+===Plothole===
+
+Plothole is essentially a graphical wrapper around matplotlib, intended fopr quick and easy plotting of numerical data. It supports only a small subset of matplotlibs functionality and is centered around line plots. However, it adds some stuff too, such as data management and persistent sessions. It also has a simple command interface to matplotlib, enabling more advanced plot manipulation if needed.
+
+Written entirely in python, it should be easily extended with your own analysis functions, etc. It is not intended to be a replacement for complete packages such as Origin or Igor Pro, but focuses on quick access to data visualization. That said, since it's built around the very competent matplotlib package, its output is definitely "publication quality" (whatever that means).
+
+Plothole should be considered alpha software, meaning that it has (known and unknown) bugs and incomplete functionality, but is in a state where it can at least be useful. I take no responsibility if plothole eats all your data, or produces erroneous plots that destroy your reputation :)
+
+
+==Installation==
+
+You need Python plus the python modules pygtk, kiwi, gazpacho, matplotlib, scipy and numpy, latest versions should do (at the time of writing). It has been confirmed to run on Linux and Windows, so far.
+
+After installing the components it should just be a matter of running the "plothole" file.
+
+==Usage==
+
+
+=Concepts=
+
+There are a few core concepts that will be referred to in the manual and in the program itself:
+
+   * Source: a data file or mathematical expression that results in at least two vectors, or "columns" ("X" and "Y") of numbers.
+   * Line: a 2D representation of two Source columns, one corresponding to X- and one to Y-coordinates, with lines drawn between these.
+   * Plot: a collection of Lines in a common set of axes. Each Plot corresponds to its own window on the screen (if visible).
+
+
+=Main window=
+
+The main window opens when you start Plothole. It consists of a Source list (to the left), a Plot selector (below the Source list) and a tabbed part (Right) containing numerous settings and information about the selected Source/Plot. The two tabs concern Sources and Plots respectively.
+
+There is also a menu bar (top) and a information field (bottom).
+
+
+=Plotting some data=
+
+The most basic operation in Plothole is importing a data file as a Source and making a Plot from it. Adding a Source from file is most easily done by drag-and-drop from your favorite file manager to the Source list in the main window. You can use any text file that contains numeric data in columns. There may be ordinary text at the beginning and end of the file, Plothole can (or at least it should, this is not very well tested...) discriminate between what’s numeric data and what’s not.
+
+Dropping one or several files on the Source list should create the same number of new Sources, each named after the corresponding file minus any filename extension. You can rename them as you want by clicking on their names in the Source list. Sources do not need unique names since they are identified by their ID number, which is visible in the second column of the Source list.
+
+Observe that the Plot chooser button below the Source list is empty to begin with. This is because there are currently no Plots. To create a new Plot, select a Source (or several, using Ctrl-leftclick or Shift-leftclick) in the Source list and press “Ctrl-P” (or select “New Plot” from the “Plot” menu). A new window should immediately pop up, containing one or more coloured lines representing the Sources.
+
+Notice that, in the Source list, the selected Sources now have a checkmark in the first column. This means simply that they are included in the currently selected Plot. You can click this checkmark to remove a Source from the current Plot, or to add another one. In fact, if there are no Plots, clicking a checkmark causes a new Plot to be created.
+
+Another useful way to create a Source is from the clipboard. Select some tabular numeric data, e.g. in your web browser, copy it and then select "Add Source from Clipboard" from the Sources menu.
+
+
+=Multi column Sources=
+
+Sometimes data does not come in neat two column, X-Y form and you may want to plot one arbitrary column against another. This can be done by selecting the Source in the Source list, and changing the "X col" and "Y col" numbers in the Source tab to the right. This may also be done after plotting, the relevant Plots being automatically updated to reflect your changes. The info bar on the botton of the main window provides the number of columns available in the selected Source.
+
+
+=Expressions=
+
+Often you need to do some math on your data before plotting it. This is where the Expressions part of the Source tab comes in. Expressions are pretty powerful, but may be a bit complicated if you don’t already know Python, and numpy/scipy in particular. The basic idea is that an Expression may do anything within the bounds of python/numpy/scipy as long as it returns a numpy array. Also, the X and Y columns must have the same length.
+
+Some shorthands are provided for access to your Sources:
+
+    s refers to the present Source. s[0] is its first column, and so on.
+    s0 refers to the Source with ID 0, s1 is Source 1, and so on.
+    x is the current Source’s X column, and y the Y column, as selected by the user.
+    x1 is Source 1′s X column, etc.
+
+Thus you may write Expressions such as
+
+    X: x+10    #offsetting by 10 on the x-axis
+    Y: y*2     #scaling by 2 on the y-axis
+    Y: y/s[2]  #normalizing y by the third column data
+    X: linspace(0, 10, 100), Y: sin(x)    #for plotting arbitrary functions
+
+There are numerous possibilities including interpolation, peak fitting, regression, etc. Check out scipy and numpy for more information and docs. Note that the Expression does not need to //change// the Source data, it just uses it and passes its result to the Plot. This means that the original data remains untouched.
+
+If you want to include Sources that are purely generated from mathematical functions, you can use “New Source” from the Source menu, which gives you an empty Source with no columns, and add Expressions to it as you like. Remember that you will need both a X and Y Expression in this case.
+
+Each Expression can be (de)activated using its checkbox. A inactive Expression has no effect. If an active Expression fails to compute, it is automatically deactivated. Since the Expression is updated “on the fly” as you type, it will commonly be the case that it remains invalid until you have finished typing. The expression can also be enabled again by pressing Return when you’re done.
+
+
+=The Plot tab=
+
+Under the Plot tab you’ll find the basic Plot settings for the selected Plot. You can select a particular Plot either by using the Plot chooser, or simply by focusing its window. The Plot title (window title) can be edited here.
+
+The Plot tab has some sub-tabs, each concerning different aspects of the Plot. They are mostly self explanatory and usually follow matplotlib naming. The most important is probably the Lines tab, which shows a list of the lines in the Plot. Below the list are the Line settings, where you can change things such as appearance and add simple transformations (these act //after// any Expressions) etc.
+
+The Command tab deserves special mention since it is a bit more involved. Basically it provides a direct interface to the matplotlib instance behind your plot. That means that even though the Plothole GUI only reaches a small subset of mpl’s functionality, you can always access it through the Plot Command tab. The following variables are available:
+
+    plot - the Plot itself
+    figure - the Plot’s figure object
+    axes - the Plot’s axes object
+    legend - the Plot’s legend object
+    s - a list containing all Sources; e.g. s[0] refers to the first source.
+    p - a list of all Plots
+
+This way it’s possible to add things to your plot that aren’t (yet) available from the GUI, such as free text (even using LaTeX math notation), arrows or different kinds of plots, such as scatter. You can also tweak any aspect of the Plot. The commands are applied to the plot after everything else. Some examples:
+
+    figure.text(0.5, 0.5, "$x^2$") Add a text label, centered on the plot, using LaTeX math. Using recent versions of matplotlib you may freely mix ordinary text and LaTeX notation by using $ signs around the math.
+    axes.scatter(s[1].x_data, s[1].y_data, c=-s[1].y_data/1000., linewidth=0) A scatter-plot of XY data from Source 1, with the same Y data for point colors.
+    axes.axvline(534.0,0.0,1.0) A vertical line at x=534 across the whole y range.
+    axes.annotate("Hello!", xy=(531.3,1.0), xytext=(531,0.5), arrowprops=dict(fc="black", width=0.1)) Some text, with an arrow attached.
+
+The commands are interpreted by Python so in principle you can put any Python code here. Press the Refresh button beneath the Command text area to apply your commands to the Plot. This is a breach of the usual Plothole convention of instant reaction, because Plot commands can easily become very complex. Consult matplotlib documentation to learn about the available methods.
