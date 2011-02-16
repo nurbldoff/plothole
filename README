@@ -6,6 +6,8 @@ Written entirely in python, it should be easily extended with your own analysis 
 
 Plothole should be considered alpha software, meaning that it has (known and unknown) bugs and incomplete functionality, but is in a state where it can at least be useful. I take no responsibility if plothole eats all your data, or produces erroneous plots that destroy your reputation :)
 
+The program is released under the GPL v2 license.
+
 
 ==Installation==
 
@@ -92,9 +94,9 @@ The Command tab deserves special mention since it is a bit more involved. Basica
 
 This way it’s possible to add things to your plot that aren’t (yet) available from the GUI, such as free text (even using LaTeX math notation), arrows or different kinds of plots, such as scatter. You can also tweak any aspect of the Plot. The commands are applied to the plot after everything else. Some examples:
 
-    figure.text(0.5, 0.5, "$x^2$") Add a text label, centered on the plot, using LaTeX math. Using recent versions of matplotlib you may freely mix ordinary text and LaTeX notation by using $ signs around the math.
-    axes.scatter(s[1].x_data, s[1].y_data, c=-s[1].y_data/1000., linewidth=0) A scatter-plot of XY data from Source 1, with the same Y data for point colors.
-    axes.axvline(534.0,0.0,1.0) A vertical line at x=534 across the whole y range.
-    axes.annotate("Hello!", xy=(531.3,1.0), xytext=(531,0.5), arrowprops=dict(fc="black", width=0.1)) Some text, with an arrow attached.
+    figure.text(0.5, 0.5, "$x^2$")   #Add a text label, centered on the plot, using LaTeX math. Using recent versions of matplotlib you may freely mix ordinary text and LaTeX notation by using $ signs around the math.
+    axes.scatter(s[1].x_data, s[1].y_data, c=-s[1].y_data/1000., linewidth=0)   #A scatter-plot of XY data from Source 1, with the same Y data for point colors.
+    axes.axvline(534.0,0.0,1.0)   #A vertical line at x=534 across the whole y range.
+    axes.annotate("Hello!", xy=(531.3,1.0), xytext=(531,0.5), arrowprops=dict(fc="black", width=0.1))    #Some text, with an arrow attached.
 
 The commands are interpreted by Python so in principle you can put any Python code here. Press the Refresh button beneath the Command text area to apply your commands to the Plot. This is a breach of the usual Plothole convention of instant reaction, because Plot commands can easily become very complex. Consult matplotlib documentation to learn about the available methods.
